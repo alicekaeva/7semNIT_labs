@@ -174,7 +174,7 @@ con = sqlite3.connect("journal.sqlite")
 cursor = con.cursor()
 
 """
-Вывести все активные работы в текущем месяце
+Вывести активные работы в текущем месяце
 """
 
 cursor.execute('''
@@ -188,21 +188,40 @@ ORDER BY start_date;
 ''')
 result = cursor.fetchall()
 for item in result:
-    print(f'ФИО: {item[0]}\nРабота: {item[1]}\nНачал: {item[2]}\nЗакончил: {item[3]}\n')
+    print(f'ФИО работника: {item[0]}\nРабота: {item[1]}\nНачал: {item[2]}\nЗакончил: {item[3]}\n')
 
 """
-Вывести все опубликованные статьи определеннего жанра и названия выпусков, содержащих эти статьи
+Вывести работников, которые выполняли определенную работу 
 """
+
+work_type = input('Введите вид работы: ')
+cursor.execute('''
+SELECT worker_name, start_date, end_date
+FROM issue_article_work
+JOIN work_worker USING (work_worker_id)
+JOIN worker USING (worker_id)
+JOIN work USING (work_id)
+WHERE work_name = :work_type and end_date IS NOT NULL
+''', {'work_type': work_type})
+result = cursor.fetchall()
+for item in result:
+    print(f'ФИО работника: {item[0]}\nНачал: {item[1]}\nЗакончил: {item[2]}\n')
+
+"""
+Вывести опубликованные статьи определеннего жанра и названия выпусков, содержащих эти статьи
+"""
+
 genre = input('Введите жанр: ')
 cursor.execute('''
-SELECT article_name, issue_name
+SELECT DISTINCT article_name, issue_name
 FROM article
 JOIN genre USING (genre_id)
 JOIN issue_article USING (article_id)
 JOIN issue_article_work USING (issue_article_id)
 JOIN issue USING (issue_id)
-WHERE genre_name = :genre AND end_date IS NOT NULL 
-GROUP BY issue_article_id;
+WHERE genre_name = :genre AND issue_article_id NOT IN ( SELECT issue_article_id
+                                                        FROM issue_article_work
+                                                        WHERE end_date IS NULL);
 ''', {'genre': genre})
 result = cursor.fetchall()
 for item in result:
