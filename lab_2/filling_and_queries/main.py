@@ -264,21 +264,53 @@ for item in result:
     print(f'Статья: {item[0]}\nВыпуск: {item[1]}\n')
 
 """
-Вывести законченные статьи определеннего жанра и названия выпусков, содержащих эти статьи
+Вывести ФИО работников, которые не были ответственными за определенный выпуск
 """
 
-genre = input('Введите жанр: ')
+issue = input('Введите выпуск: ')
 cursor.execute('''
-SELECT DISTINCT article_name, issue_name
-FROM article
-JOIN genre USING (genre_id)
-JOIN issue_article USING (article_id)
-JOIN issue_article_work USING (issue_article_id)
-JOIN issue USING (issue_id)
-WHERE genre_name = :genre AND issue_article_id NOT IN ( SELECT issue_article_id
-                                                        FROM issue_article_work
-                                                        WHERE end_date IS NULL);
-''', {'genre': genre})
+SELECT DISTINCT worker_name
+FROM worker
+JOIN work_worker USING (worker_id)
+JOIN issue_article_work USING (work_worker_id)
+WHERE worker_id NOT IN (SELECT responsible_for_work_id
+                        FROM issue_article_work
+                        JOIN issue_article USING (issue_article_id)
+                        JOIN issue USING (issue_id)
+                        WHERE issue_name = :issue)
+''', {'issue': issue})
 result = cursor.fetchall()
 for item in result:
-    print(f'Статья: {item[0]}\nВыпуск: {item[1]}\n')
+    print(f'ФИО: {item[0]}\n')
+
+"""
+Для определенного выпуска удалить все работы по неопубликованным статьям
+"""
+
+issue = input('Введите выпуск: ')
+cursor.execute('''
+DELETE
+FROM issue_article_work
+WHERE issue_article_work_id IN (SELECT issue_article_work_id
+                        FROM issue_article_work
+                        JOIN issue_article USING (issue_article_id)
+                        JOIN issue USING (issue_id)
+                        WHERE issue_name = :issue and end_date IS NULL)
+''', {'issue': issue})
+con.commit()
+
+"""
+Для определенной работы проставить дату окончания 
+"""
+
+idd = int(input('Введите ID работы: '))
+con.execute('''
+UPDATE issue_article_work
+SET end_date = DATE()
+WHERE issue_article_work_id = :id
+''', {'id': idd})
+con.commit()
+
+con.close()
+
+
