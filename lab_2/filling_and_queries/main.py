@@ -174,7 +174,8 @@ con = sqlite3.connect("journal.sqlite")
 cursor = con.cursor()
 
 """
-Вывести активные работы в текущем месяце
+Вывести активные работы в текущем месяце (Работник, Работа, Дата начала, Дата окончания) 
+и отсортировать по возрастанию даты начала
 """
 
 cursor.execute('''
@@ -191,7 +192,8 @@ for item in result:
     print(f'ФИО работника: {item[0]}\nРабота: {item[1]}\nНачал: {item[2]}\nЗакончил: {item[3]}\n')
 
 """
-Вывести работников, которые выполняли определенную работу 
+Вывести работников, которые выполняли определенную работу (Работник, Дата начала, Дата окончания)
+и отсортировать ФИО в алфавитном порядке
 """
 
 work_type = input('Введите вид работы: ')
@@ -202,13 +204,67 @@ JOIN work_worker USING (work_worker_id)
 JOIN worker USING (worker_id)
 JOIN work USING (work_id)
 WHERE work_name = :work_type and end_date IS NOT NULL
+ORDER BY worker_name;
 ''', {'work_type': work_type})
 result = cursor.fetchall()
 for item in result:
     print(f'ФИО работника: {item[0]}\nНачал: {item[1]}\nЗакончил: {item[2]}\n')
 
 """
-Вывести опубликованные статьи определеннего жанра и названия выпусков, содержащих эти статьи
+Вывести количество запланированных статей для каждого выпуска (Название выпуска, Кол-во статей)
+"""
+
+cursor.execute('''
+SELECT issue_name, COUNT(article_id)
+FROM issue
+JOIN issue_article USING (issue_id)
+GROUP BY issue_name;
+''')
+result = cursor.fetchall()
+for item in result:
+    print(f'Название выпуска: {item[0]}\nКол-во статей: {item[1]}\n')
+
+"""
+Вывести самое позднее дело, взятое в работу, над каждым выпуском (Название выпуска, Название работы, ФИО 
+Ответственного, Дата начала)
+"""
+
+cursor.execute('''
+SELECT issue_name, work_name, worker_name, MAX(start_date)
+FROM issue
+JOIN issue_article USING (issue_id)
+JOIN issue_article_work USING (issue_article_id)
+JOIN work_worker USING (work_worker_id)
+JOIN worker USING (worker_id)
+JOIN work USING (work_id)
+GROUP BY issue_name;
+''')
+result = cursor.fetchall()
+for item in result:
+    print(f'Название выпуска: {item[0]}\nРабота: {item[1]}\nФИО Ответственного: {item[2]}\nНачал: {item[3]}\n')
+
+"""
+Вывести законченные статьи определеннего жанра и названия выпусков, содержащих эти статьи
+"""
+
+genre = input('Введите жанр: ')
+cursor.execute('''
+SELECT DISTINCT article_name, issue_name
+FROM article
+JOIN genre USING (genre_id)
+JOIN issue_article USING (article_id)
+JOIN issue_article_work USING (issue_article_id)
+JOIN issue USING (issue_id)
+WHERE genre_name = :genre AND issue_article_id NOT IN ( SELECT issue_article_id
+                                                        FROM issue_article_work
+                                                        WHERE end_date IS NULL);
+''', {'genre': genre})
+result = cursor.fetchall()
+for item in result:
+    print(f'Статья: {item[0]}\nВыпуск: {item[1]}\n')
+
+"""
+Вывести законченные статьи определеннего жанра и названия выпусков, содержащих эти статьи
 """
 
 genre = input('Введите жанр: ')
