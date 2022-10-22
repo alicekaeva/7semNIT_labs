@@ -1,0 +1,43 @@
+<html>
+<head>
+  <title>Таблица и график функции</title>
+</head>
+<style>
+  body {
+    display: flex;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  table, th, td {
+    border-color: rgb(242, 242, 242);
+  }
+  tr:nth-child(2n) {
+    background-color: rgb(242, 242, 242);
+  }
+</style>
+<body>
+    <div style="float: left">
+      <p>
+        <b>f(x) = x^3 - 6x^2 + x + 5</b>
+      </p>
+      <table border="1" cellpadding="7">
+        <tr style="background-color: rgb(242, 242, 242)">
+          <th>x</th>
+          <th>f(x)</th>
+        </tr>
+        <tbody>
+          {% for i in range(len(x)) %}
+          <tr>
+            <td>{{round(x[i], 3)}}</td>
+            <td>{{round(y[i], 4)}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  <div style="float: right">
+      <img src="{{ pict }}">
+  </div>
+</body>
+</html>
