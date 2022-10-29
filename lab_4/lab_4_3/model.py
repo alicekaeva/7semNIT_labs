@@ -17,7 +17,7 @@ def card(conn, publishers: list, genres: list, authors: list):
     authors = tuple(authors)
     genres = tuple(genres)
     publishers = tuple(publishers)
-    return pd.read_sql('''
+    return pd.read_sql(f'''
         SELECT
             book_id,
         	title AS 'Название',
@@ -32,12 +32,12 @@ def card(conn, publishers: list, genres: list, authors: list):
         JOIN book_author USING(book_id)
         JOIN author USING(author_id)
         GROUP BY book_id
-        HAVING (genre_id IN %(genres)s)OR NOT IN %(genres)s)
-            AND (publisher_id IN %(publishers)s OR NOT IN %(publishers)s)
-            AND (author_id IN %(authors)s OR NOT IN %(authors)s)
+        HAVING (genre_id IN {genres})
+            AND (publisher_id IN {publishers})
+            AND (author_id IN {authors})
         ORDER BY
             title,
             available_numbers DESC,
             genre_name,
             year_publication DESC 
-    ''', conn, params={"authors": authors, "genres": genres, "publishers": publishers})
+    ''', conn)
