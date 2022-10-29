@@ -2,3 +2,4 @@
 *.drawio
 *.mwb
 .idea/
+.DS_Store
