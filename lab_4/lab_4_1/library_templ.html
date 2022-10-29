@@ -2,27 +2,31 @@
 <head>
     <title> Дамп базы данных </title>
     {% macro render_table(table_name, relation) %}
-    <p>
-        <b>{{table_name}} </b>
-    </p>
-    {% set n = len(relation) %}
-    <table>
-        <tr>
-            {% for name in relation.dtypes.index %}
-            <th>{{name}}</th>
-            {% endfor %}
-        </tr>
-        <tbody>
+    <div class="table-wrapper">
+        <center>
+            <p>
+                <b>{{table_name}} </b>
+            </p>
+        </center>
+        {% set n = len(relation) %}
+        <table border="1">
+            <tr style="background-color: rgb(242, 242, 242);">
+                {% for name in relation.dtypes.index %}
+                <th>{{name}}</th>
+                {% endfor %}
+            </tr>
+            <tbody>
 
-        {% for i in range(n) %}
-        <tr>
-            {% for name in relation.dtypes.index %}
-            <td> {{ relation.loc[i, name] }} </td>
+            {% for i in range(n) %}
+            <tr>
+                {% for name in relation.dtypes.index %}
+                <td> {{ relation.loc[i, name] }} </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     {% endmacro %}
     <link rel="stylesheet" href="main.css">
 </head>

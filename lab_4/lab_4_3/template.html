@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% macro render_filters(type, selected) %}
+    set n = len(type)
+    {% if type == authors %}
+    <h3>Автор</h3>
+    {% elif type == genres %}
+    <h3>Жанр</h3>
+    {% elif type == publishers %}
+    <h3>Издательство</h3>
+    {% endif%}
+    <div class="list">
+        {% for i in range(n) %}
+        {% set id_r = type.loc[i, name] %}
+        {% if id_r in selected %}
+        <input type="checkbox" checked>
+        <label>{{ type.loc[i, name] }}</label>
+        {% else %}
+        <input type="checkbox">
+        <label>{{ type.loc[i, name] }}</label>
+        {% endif %}
+        {{ type.loc[i, name] }}
+        {% endfor %}
+    </div>
+    {% endmacro %}
+    <meta charset="UTF-8">
+    <title>Книги</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<div class="content">
+    <div class="lists">
+        {{ render_filters(genres, sel_genres) }}
+        {{ render_filters(authors, sel_authors) }}
+        {{ render_filters(publishers, sel_publishers) }}
+    </div>
+    <div class="chosen">
+
+    </div>
+    <div class="cards">
+
+    </div>
+</div>
+</body>
+</html>
