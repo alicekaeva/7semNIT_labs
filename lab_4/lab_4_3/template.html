@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% macro render_filters(type, selected) %}
-    set n = len(type)
-    {% if type == authors %}
-    <h3>Автор</h3>
-    {% elif type == genres %}
-    <h3>Жанр</h3>
-    {% elif type == publishers %}
-    <h3>Издательство</h3>
-    {% endif%}
-    <div class="list">
+    {% macro render_filters(name, category, selected) %}
+    {% set n = len(category) %}
+    <fieldset>
+        <legend>{{ name }}</legend>
         {% for i in range(n) %}
-        {% set id_r = type.loc[i, name] %}
+        {% set id_r = category.loc[i, category.columns[0]] %}
         {% if id_r in selected %}
         <input type="checkbox" checked>
-        <label>{{ type.loc[i, name] }}</label>
+        <label>{{ category.loc[i, category.columns[1]] }}</label>
         {% else %}
         <input type="checkbox">
-        <label>{{ type.loc[i, name] }}</label>
+        <label>{{ category.loc[i, category.columns[1]] }}</label>
         {% endif %}
-        {{ type.loc[i, name] }}
         {% endfor %}
-    </div>
+    </fieldset>
+    {% endmacro %}
+    {% macro render_cards(card) %}
+    {% set n = len(card) %}
+    {% for i in range(n) %}
+    {% for name in card.dtypes.index %}
+    <p>{{ name }} {{ card.loc[i, name] }} </p>
+    {% endfor %}
+    {% endfor %}
+    {% endmacro %}
+    {% macro render_selected(relation, sel, name) %}
+    {% if len(sel) != 0 %}
+    <p> {{ name }}:
+        {% set n = len(relation) %}
+        {% for i in range(n) %}
+        {% set id_r = relation.loc[i, relation.columns[0]] %}
+        {% if id_r in sel and id_r == sel[-1] %}
+        {{ relation.loc[i, relation.columns[1]] }}.
+        {% elif id_r in sel and id_r != sel[-1] %}
+        {{ relation.loc[i, relation.columns[1]] }},
+        {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
     {% endmacro %}
     <meta charset="UTF-8">
     <title>Книги</title>
@@ -31,15 +47,22 @@
 <body>
 <div class="content">
     <div class="lists">
-        {{ render_filters(genres, sel_genres) }}
-        {{ render_filters(authors, sel_authors) }}
-        {{ render_filters(publishers, sel_publishers) }}
+        <form>
+            {{ render_filters('Жанры', genres, sel_genres) }}
+            {{ render_filters('Авторы', authors, sel_authors) }}
+            {{ render_filters('Издательства', publishers, sel_publishers) }}
+            <br>
+            <button type="submit">Найти</button>
+            <button type="submit">Очистить</button>
+        </form>
     </div>
     <div class="chosen">
-
+        {{ render_selected(genres, sel_genres, 'Жанры') }}
+        {{ render_selected(authors, sel_authors, 'Авторы') }}
+        {{ render_selected(publishers, sel_publishers, 'Издательства') }}
     </div>
     <div class="cards">
-
+        {{ render_cards(card) }}
     </div>
 </div>
 </body>

@@ -1,0 +1,56 @@
+* {
+  font-family: Arial;
+}
+
+.content {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.lists {
+  min-width: 16rem;
+  margin-top: -1px;
+  position: sticky;
+  height: 100%;
+  top: 15px;
+}
+
+.lists fieldset {
+  margin-bottom: 8px;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+}
+
+.lists label {
+  color: rgb(15, 83, 165);
+}
+
+.lists input[checkbox] {
+  background-color: rgb(15, 83, 165);
+}
+
+.lists button, .lists .count {
+  margin-left: 3px;
+}
+
+.lists .count {
+  margin-top: 1rem;
+  font-size: 11pt;
+}
+
+.checkbox-wrapper:not(:last-child) {
+  margin-bottom: 4px;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.checkbox-wrapper > input[checkbox] {
+  margin-right: 3px;
+}
+
+legend {
+  color: rgb(15, 83, 165);
+}

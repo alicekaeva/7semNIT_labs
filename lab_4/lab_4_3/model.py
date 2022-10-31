@@ -13,13 +13,15 @@ def get_genre(conn):
     return pd.read_sql("SELECT * FROM genre", conn)
 
 
-def card(conn, publishers: list, genres: list, authors: list):
-    authors = tuple(authors)
-    genres = tuple(genres)
-    publishers = tuple(publishers)
+def card(conn, publishers, genres, authors):
+    if len(publishers) == 1:
+        publishers = f'({publishers[0]})'
+    elif len(genres) == 1:
+        genres = f'({genres[0]})'
+    elif len(authors) == 1:
+        authors = f'({authors[0]})'
     return pd.read_sql(f'''
         SELECT
-            book_id,
         	title AS 'Название',
         	group_concat(DISTINCT author_name) AS 'Авторы',
         	genre_name AS 'Жанр',
@@ -32,9 +34,9 @@ def card(conn, publishers: list, genres: list, authors: list):
         JOIN book_author USING(book_id)
         JOIN author USING(author_id)
         GROUP BY book_id
-        HAVING (genre_id IN {genres})
-            AND (publisher_id IN {publishers})
-            AND (author_id IN {authors})
+        HAVING (genre_id IN {genres} OR {not genres})
+            AND (publisher_id IN {publishers} OR {not publishers})
+            AND (author_id IN {authors} OR {not authors})
         ORDER BY
             title,
             available_numbers DESC,

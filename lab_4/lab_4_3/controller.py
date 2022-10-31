@@ -2,9 +2,9 @@ from jinja2 import Template
 import sqlite3
 from model import get_publisher, get_author, get_genre, card
 
-genres = [1, 3]
-authors = [1, 3]
-publishers = [1, 3]
+genres = (1, 2)
+authors = (1,)
+publishers = ()
 conn = sqlite3.connect("../library.sqlite")
 df_author = get_author(conn)
 df_publisher = get_publisher(conn)
@@ -28,6 +28,6 @@ result_html = template.render(
     len=len
 )
 
-f = open('reader.html', 'w', encoding='utf-8-sig')
+f = open('result.html', 'w', encoding='utf-8-sig')
 f.write(result_html)
 f.close()
