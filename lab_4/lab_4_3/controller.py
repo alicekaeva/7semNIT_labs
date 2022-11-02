@@ -2,8 +2,8 @@ from jinja2 import Template
 import sqlite3
 from model import get_publisher, get_author, get_genre, card
 
-genres = (1, 2)
-authors = (1,)
+genres = (1, 2, 3)
+authors = (2, 3, 4, 5)
 publishers = ()
 conn = sqlite3.connect("../library.sqlite")
 df_author = get_author(conn)

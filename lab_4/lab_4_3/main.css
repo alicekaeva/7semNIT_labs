@@ -7,6 +7,12 @@
   margin-top: 1rem;
 }
 
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
 .lists {
   min-width: 16rem;
   margin-top: -1px;
@@ -29,13 +35,8 @@
   background-color: rgb(15, 83, 165);
 }
 
-.lists button, .lists .count {
+.lists button {
   margin-left: 3px;
-}
-
-.lists .count {
-  margin-top: 1rem;
-  font-size: 11pt;
 }
 
 .checkbox-wrapper:not(:last-child) {
@@ -53,4 +54,38 @@
 
 legend {
   color: rgb(15, 83, 165);
+}
+
+.card {
+  background-color: #F8F9FB;
+  border-radius: 6px;
+  padding: 12px 20px;
+  margin: 8px;
+  width: 20rem;
+  min-width: 17rem;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.15), 0 2px 2px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.15)
+}
+
+.card .button-wrapper {
+  bottom: 1rem;
+  right: 1rem;
+  position: absolute;
+}
+
+.card p {
+  margin: 2px;
+  color: #68846D;
+}
+
+.card p:last-child {
+  margin-bottom: 1rem;
+}
+
+.chosen {
+  display: flex;
+}
+
+.chosen p {
+  color: #FA868B;
 }

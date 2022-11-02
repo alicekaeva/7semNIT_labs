@@ -6,28 +6,35 @@
     <fieldset>
         <legend>{{ name }}</legend>
         {% for i in range(n) %}
-        {% set id_r = category.loc[i, category.columns[0]] %}
-        {% if id_r in selected %}
-        <input type="checkbox" checked>
-        <label>{{ category.loc[i, category.columns[1]] }}</label>
-        {% else %}
-        <input type="checkbox">
-        <label>{{ category.loc[i, category.columns[1]] }}</label>
-        {% endif %}
+        <div class="checkbox-wrapper">
+            {% set id_r = category.loc[i, category.columns[0]] %}
+            {% if id_r in selected %}
+            <input type="checkbox" checked>
+            <label>{{ category.loc[i, category.columns[1]] }}</label>
+            {% else %}
+            <input type="checkbox">
+            <label>{{ category.loc[i, category.columns[1]] }}</label>
+            {% endif %}
+        </div>
         {% endfor %}
     </fieldset>
     {% endmacro %}
     {% macro render_cards(card) %}
     {% set n = len(card) %}
     {% for i in range(n) %}
-    {% for name in card.dtypes.index %}
-    <p>{{ name }} {{ card.loc[i, name] }} </p>
-    {% endfor %}
+    <div class="card">
+        {% for name in card.dtypes.index %}
+        <p>{{ name }}: <b>{{ card.loc[i, name] }}</b></p>
+        {% endfor %}
+        <div class="button-wrapper">
+            <button type="submit">Выбрать</button>
+        </div>
+    </div>
     {% endfor %}
     {% endmacro %}
     {% macro render_selected(relation, sel, name) %}
     {% if len(sel) != 0 %}
-    <p> {{ name }}:
+    <p>&nbsp;{{ name }}:
         {% set n = len(relation) %}
         {% for i in range(n) %}
         {% set id_r = relation.loc[i, relation.columns[0]] %}
@@ -56,13 +63,15 @@
             <button type="submit">Очистить</button>
         </form>
     </div>
-    <div class="chosen">
-        {{ render_selected(genres, sel_genres, 'Жанры') }}
-        {{ render_selected(authors, sel_authors, 'Авторы') }}
-        {{ render_selected(publishers, sel_publishers, 'Издательства') }}
-    </div>
-    <div class="cards">
-        {{ render_cards(card) }}
+    <div class="result">
+        <div class="chosen">
+            {{ render_selected(genres, sel_genres, 'Жанры') }}
+            {{ render_selected(authors, sel_authors, 'Авторы') }}
+            {{ render_selected(publishers, sel_publishers, 'Издательства') }}
+        </div>
+        <div class="cards">
+            {{ render_cards(card) }}
+        </div>
     </div>
 </div>
 </body>
