@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск</title>
+    <link rel="stylesheet" type="text/css" href="/static/CSS/search.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/CSS/style.css"/>
+    {% import "macros.html" as macros %}
+</head>
+<body>
+<div class=menu>
+    <ul>
+        <li class=active><a href={{ url_for("index") }}>Поиск книг</a></li>
+    </ul>
+</div>
+<div class="content">
+    <div class="lists">
+        <form action="" method="post">
+            {{ macros.render_filters('Жанры', genres, sel_genres, len) }}
+            {{ macros.render_filters('Авторы', authors, sel_authors, len) }}
+            {{ macros.render_filters('Издательства', publishers, sel_publishers, len) }}
+            <br>
+            <button type="submit">Найти</button>
+            <button type="submit" name="clear">Очистить</button>
+        </form>
+    </div>
+    <div class="result">
+        <div class="chosen">
+            {{ macros.render_selected(genres, sel_genres, 'Жанры', len) }}
+            {{ macros.render_selected(authors, sel_authors, 'Авторы', len) }}
+            {{ macros.render_selected(publishers, sel_publishers, 'Издательства', len) }}
+        </div>
+        <div class="cards">
+            {{ macros.render_cards(card, len) }}
+        </div>
+    </div>
+</div>
+</body>
+</html>

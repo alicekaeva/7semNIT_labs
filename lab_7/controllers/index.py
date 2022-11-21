@@ -1,10 +1,7 @@
 from app import app
 from flask import render_template, request, session
-# import sqlite3
 from utils import get_db_connection
-from models.index_model import get_reader, get_book_reader, get_new_reader,
-
-borrow_book
+from models.index_model import get_reader, get_book_reader, get_new_reader, borrow_book
 
 
 @app.route('/', methods=['get'])
@@ -15,13 +12,12 @@ def index():
     if request.values.get('reader'):
         reader_id = int(request.values.get('reader'))
         session['reader_id'] = reader_id
-
-    # нажата кнопка Добавить со страницы Новый читатель
+    # нажата кнопка "Добавить" со страницы Новый читатель
     # (взять в комментарии, пока не реализована страница Новый читатель)
     elif request.values.get('new_reader'):
         new_reader = request.values.get('new_reader')
         session['reader_id'] = get_new_reader(conn, new_reader)
-    # нажата кнопка Взять со страницы Поиск
+    # нажата кнопка "Взять" со страницы Поиск
     # (взять в комментарии, пока не реализована страница Поиск)
     elif request.values.get('book'):
         book_id = int(request.values.get('book'))
