@@ -11,18 +11,14 @@ def search():
     df_publisher = get_publisher(conn)
     df_genre = get_genre(conn)
 
-    # if request.form.get('clear'):
-    #     genres = ()
-    #     publishers = ()
-    #     authors = ()
-    # else:
-    #     genres = tuple(request.form.getlist('genre_id'))
-    #     publishers = tuple(request.form.getlist('publisher_id'))
-    #     authors = tuple(request.form.getlist('author_id'))
-
-    genres = (3,2,1)
-    authors = (2, 3, 4, 5)
-    publishers = ()
+    if request.form.get('clear'):
+        genres = []
+        publishers =[]
+        authors = []
+    else:
+        genres = [int(item) for item in request.form.getlist('genre_id')]
+        publishers = [int(item) for item in request.form.getlist('publisher_id')]
+        authors = [int(item) for item in request.form.getlist('author_id')]
 
     df_card = card(conn, publishers, genres, authors)
 
