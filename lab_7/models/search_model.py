@@ -26,13 +26,19 @@ def get_author(conn):
         GROUP BY author_name''', conn)
 
 
+def convert(list):
+    # Converting integer list to string list
+    s = [str(i) for i in list]
+
+    # Join list items using join()
+    res = ",".join(s)
+
+    return res
+
 def card(conn, publishers, genres, authors):
-    if len(publishers) == 1:
-        publishers = f'({publishers[0]})'
-    elif len(genres) == 1:
-        genres = f'({genres[0]})'
-    elif len(authors) == 1:
-        authors = f'({authors[0]})'
+    publishers = convert(publishers)
+    authors = convert(authors)
+    genres = convert(genres)
     return pd.read_sql(f'''
         SELECT
         	title AS 'Название',
@@ -40,16 +46,17 @@ def card(conn, publishers, genres, authors):
         	genre_name AS 'Жанр',
         	publisher_name AS 'Издательство',
             year_publication AS 'Год_издания',
-            available_numbers AS 'Количество'
+            available_numbers AS 'Количество',
+            book_id AS 'ID'
         FROM book
         JOIN genre USING(genre_id)
         JOIN publisher USING(publisher_id)
         JOIN book_author USING(book_id)
         JOIN author USING(author_id)
         GROUP BY book_id
-        HAVING (genre_id IN {genres} OR {not genres})
-            AND (publisher_id IN {publishers} OR {not publishers})
-            AND (author_id IN {authors} OR {not authors})
+        HAVING (genre_id IN ({genres}) OR ({not genres}))
+            AND (publisher_id IN ({publishers}) OR ({not publishers}))
+            AND (author_id IN ({authors}) OR ({not authors}))
         ORDER BY
             title,
             available_numbers DESC,
