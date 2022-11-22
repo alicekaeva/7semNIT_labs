@@ -67,15 +67,13 @@
         {% for i in range(n) %}
             <div class="checkbox-wrapper">
                 {% set id_r = category.loc[i, category.columns[0]] %}
-                {% if id_r in selected %}
-                    <input type="checkbox" checked>
-                    <label>{{ category.loc[i, category.columns[1]] }}
-                        ({{ category.loc[i, category.columns[2]] }})</label>
-                {% else %}
-                    <input type="checkbox">
-                    <label>{{ category.loc[i, category.columns[1]] }}
-                        ({{ category.loc[i, category.columns[2]] }})</label>
-                {% endif %}
+                <input type="checkbox" name={{ category.columns[0] }} value={{ category.loc[i, category.columns[0]] }}
+                        {% if id_r in selected %}
+                            checked
+                        {% endif %}
+                >
+                <label>{{ category.loc[i, category.columns[1]] }}
+                    ({{ category.loc[i, category.columns[2]] }})</label>
             </div>
         {% endfor %}
     </fieldset>
@@ -86,10 +84,21 @@
     {% for i in range(n) %}
         <div class="card">
             {% for name in card.dtypes.index %}
-                <p>{{ name }}: <b>{{ card.loc[i, name] }}</b></p>
+                {% if name != 'ID' %}
+                    <p>{{ name }}: <b>{{ card.loc[i, name] }}</b></p>
+                {% endif %}
             {% endfor %}
             <div class="button-wrapper">
-                <button type="submit">Выбрать</button>
+                <form action="{{ url_for('index') }}" method="get">
+                    <input type="submit" value="Выбрать"
+                            {% if card.loc[i, 'Количество'] == 0 %}
+                           disabled
+                            {% endif %}
+                    >
+                    <label>
+                        <input hidden type="text" name="book" value="{{ card.loc[i, 'ID'] }}">
+                    </label>
+                </form>
             </div>
         </div>
     {% endfor %}
